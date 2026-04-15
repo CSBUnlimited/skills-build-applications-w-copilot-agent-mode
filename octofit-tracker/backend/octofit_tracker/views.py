@@ -24,15 +24,16 @@ class WorkoutViewSet(viewsets.ModelViewSet):
     serializer_class = WorkoutSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+from django.db.models import Sum
+
 class LeaderboardViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=False, methods=['get'])
     def list(self, request):
         # Example: leaderboard by total calories burned
         leaderboard = (
             Activity.objects.values('user__username')
-            .annotate(total_calories=models.Sum('calories_burned'))
+            .annotate(total_calories=Sum('calories_burned'))
             .order_by('-total_calories')[:10]
         )
         return Response(leaderboard)
