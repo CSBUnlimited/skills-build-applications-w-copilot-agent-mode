@@ -26,8 +26,16 @@ class Command(BaseCommand):
         bruce_dc = User.objects.create_user(username='batman', email='bruce@dc.com', password='pass', first_name='Bruce', last_name='Wayne')
         diana = User.objects.create_user(username='wonderwoman', email='diana@dc.com', password='pass', first_name='Diana', last_name='Prince')
 
-        marvel.members.add(tony, steve, bruce)
-        dc.members.add(clark, bruce_dc, diana)
+        # Add users to teams
+        try:
+            marvel.members.add(tony)
+            marvel.members.add(steve)
+            marvel.members.add(bruce)
+            dc.members.add(clark)
+            dc.members.add(bruce_dc)
+            dc.members.add(diana)
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"Error adding members to teams: {e}"))
 
         # Create Activities
         Activity.objects.create(user=tony, activity_type='Run', duration=30, calories_burned=300, date=date(2024, 1, 1), team=marvel)
